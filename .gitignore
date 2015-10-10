@@ -1,0 +1,4 @@
+/vendor/
+/storage/
+/web/scripts/sendRegistrationForm.js
+composer.lock

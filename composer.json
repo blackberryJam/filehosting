@@ -1,0 +1,22 @@
+{
+    "name": "root/filehosting.local",
+    "description": "Simple filehosting service.",
+    "authors": [
+        {
+            "name": "blackberryJam",
+            "email": "itapase@gmail.com"
+        }
+    ],
+    "require": {
+        "silex/silex": "~1.3",
+        "doctrine/orm": "2.5.1",
+        "twig/twig": "~1.0",
+        "james-heinrich/getid3": "^1.9"
+    },
+    "autoload": {
+        "psr-4": {
+            "Filehosting\\": "app/",
+            "": ""
+        }
+    }
+}

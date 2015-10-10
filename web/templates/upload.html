@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block head %}
+    {{ parent() }}
+    <link href= "../styles/upload.css" rel="stylesheet">
+{% endblock %}
+
+{% block title %}Upload{% endblock %}
+
+{% block content %}
+<div class="upload">
+    <div class="droppable" id="dropbox-1">
+        <ol class="filelist" id="filelist-1">
+        </ol>
+    </div>
+    <div class="send-button">
+        <button type="button" class="btn-lg btn-success" id="send-1">Загрузить!</button>
+    </div>
+<div>
+
+<script src="../scripts/drag&drop&upload.js" type="text/javascript"></script>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block head %}
+    {{ parent() }}
+    <link href= "../styles/file_page.css" rel="stylesheet">
+{% endblock %}
+
+{% block title %}{{ fileName }}{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>{{ fileName }} <small>{{ fileSize }}</small></h1>
+    </div>
+    <div class="file-block">
+        <div class="embedded">
+
+        </div>
+        <div class="download-button">
+            <a href="{{ downloadUrl }}"><button type="button" class="btn-lg btn-primary">Download</button></a>
+        </div>
+        {% if userId == app.user.id %}
+            <div class="delete-button">
+                <a href="{{ removeUrl }}"><button type="button" class="btn btn-danger">Remove</button></a>
+            </div>
+        {% endif %}
+        <div class="upload-info">
+            <span><strong>Owner:</strong> {{ userName }} | <strong>Upload date:</strong> {{ dateUpload }}</span>
+        </div>
+        {% if mediaInfo is not empty %}
+            <h2>MediaInfo</h2>
+            <div class="media-info">
+                <table class="table table-condensed media-info-table">
+                    <tbody>
+                        {% if attribute(mediaInfo, 'playtime_string') is not empty %}
+                            <tr>
+                                <td>Playtime</td><td>{{ attribute(mediaInfo, 'playtime_string') }}</td>
+                            </tr>
+                        {% endif %}
+                        {% if mediaInfoAudioKeys is not empty %}
+                            <tr class="header-table">
+                                <td colspan="2">AudioInfo</td>
+                            </tr>
+                            {% set audio = mediaInfo.audio %}
+                            {% for item in mediaInfoAudioKeys %}
+                                <tr>
+                                    <td>{{ item }}</td><td>{{ attribute(audio, item) }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                        {% if mediaInfoVideoKeys is not empty %}
+                            <tr class="header-table">
+                                <td colspan="2">PictureInfo</td>
+                            </tr>
+                            {% set video = mediaInfo.video %}
+                            {% for item in mediaInfoVideoKeys %}
+                                <tr>
+                                    <td>{{ item }}</td><td>{{ attribute(video, item) }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+    <div class="comments-block">
+        <h2>Comments <small></small></h2>
+
+    </div>
+{% endblock %}

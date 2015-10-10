@@ -1,0 +1,24 @@
+.form-container {
+    border: 1px solid grey;
+    background-color: beige;
+    width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 5px;
+}
+.input-group {
+    margin: 15px;
+}
+.send-button {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    width: 300px;
+}
+.send-button button {
+    width: inherit;
+}
+h1 {
+    text-align: center;
+}

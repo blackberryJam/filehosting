@@ -1,0 +1,20 @@
+.file-block {
+    width: 600px;
+}
+.file-block div {
+    margin: 15px 10px 15px 10px;
+}
+.upload-info span {
+    border: 1px #dbdbdb solid;
+    padding: 7px;
+    background-color: beige;
+    border-radius: 7px;
+}
+.download-button button {
+    width: 150px;
+}
+.media-info-table .header-table td {
+    font-weight: bold;
+    text-align: center;
+    background-color: whitesmoke;
+}
