@@ -24,6 +24,7 @@ class IndexControllerProvider implements ControllerProviderInterface
             }
 
             $fileService = $app['file.service'];
+            $fileService->setUser($app['user']);
             $fileService->manageUploadedFile($uploadedFile);
 
             if (!$fileService->getManagedFile()) {

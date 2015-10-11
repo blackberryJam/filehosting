@@ -20,12 +20,16 @@ class FileService
     protected $imageExtensions = array('jpg', 'jpeg', 'png', 'gif');
     protected $maxThumnailResolution = '300x300';
 
-    public function __construct($getid3, \Doctrine\ORM\EntityManager $entityManager, User $user, $saveDirectory)
+    public function __construct($getid3, \Doctrine\ORM\EntityManager $entityManager, $saveDirectory)
     {
         $this->getid3 = $getid3;
         $this->em = $entityManager;
-        $this->user = $user;
         $this->saveDirectory = $saveDirectory;
+    }
+
+    public function setUser(User $user)
+    {
+        $this->user = $user;
     }
 
     public function manageUploadedFile(\SplFileInfo $uploadedFile)

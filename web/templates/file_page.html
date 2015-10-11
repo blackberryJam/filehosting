@@ -18,7 +18,7 @@
         <div class="download-button">
             <a href="{{ downloadUrl }}"><button type="button" class="btn-lg btn-primary">Download</button></a>
         </div>
-        {% if userId == app.user.id %}
+        {% if userId == visitorId %}
             <div class="delete-button">
                 <a href="{{ removeUrl }}"><button type="button" class="btn btn-danger">Remove</button></a>
             </div>

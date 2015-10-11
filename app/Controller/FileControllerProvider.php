@@ -67,6 +67,7 @@ class FileControllerProvider implements ControllerProviderInterface
 
     protected function createArrayOfValues(File $file, Application $app)
     {
+        $visitor = $app['user.service']->identifyUser($app['request']->cookies->all(), false);
         $user = $file->getUser();
         $userName = $user->getName();
         $mediaInfo = $app['file.service']->getArrayOfMediaInfo($file);
@@ -81,7 +82,8 @@ class FileControllerProvider implements ControllerProviderInterface
             'mediaInfo' => $mediaInfo,
             'mediaInfoAudioKeys' => isset($mediaInfo['audio']) ? array_keys($mediaInfo['audio']) : array(),
             'mediaInfoVideoKeys' => isset($mediaInfo['video']) ? array_keys($mediaInfo['video']) : array(),
-            'userId' => $user->getId()
+            'userId' => $user->getId(),
+            'visitorId' => $visitor->getId()
         );
 
         return $values;

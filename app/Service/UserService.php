@@ -19,7 +19,7 @@ class UserService
         $this->loginManager = $loginManager;
     }
 
-    public function identifyUser($cookies)
+    public function identifyUser($cookies, $persist = true)
     {
         $user = $this->identifyUserById($cookies);
 
@@ -28,7 +28,7 @@ class UserService
         }
 
         $token = $this->getTokenOrCreateIfNotExists($cookies);
-        return $this->getUserByTokenOrCreateNewIfNotExists($token);
+        return $this->getUserByTokenOrCreateNewIfNotExists($token, $persist);
     }
 
     public function login($formData)
@@ -213,13 +213,15 @@ class UserService
         return new User();
     }
 
-    protected function getUserByTokenOrCreateNewIfNotExists($token)
+    protected function getUserByTokenOrCreateNewIfNotExists($token, $persist)
     {
         $user = $this->getUserByToken($token);
         if (!$user) {
             $user = new User();
             $user->setCookieToken($token);
-            $this->saveUserToDataBase($user);
+            if ($persist) {
+                $this->saveUserToDataBase($user);
+            }
         }
         return $user;
     }
