@@ -14,8 +14,8 @@ class FileControllerProvider implements ControllerProviderInterface
 
         $controllers->get('/{file}', function(Application $app, File $file) {
             if (null === $file->getId()) {
-                $body = 'Файл не найден.';
-                return new Response($body, 404); //redirect
+                $body = $app['twig']->render('404.html');
+                return new Response($body, 404);
             }
 
             $values = $this->createArrayOfValues($file, $app);
@@ -28,8 +28,8 @@ class FileControllerProvider implements ControllerProviderInterface
 
         $controllers->get('/{file}/remove', function(Application $app, Request $request, File $file) {
             if (null === $file->getId()) {
-                $body = 'Файл не найден.';
-                return new Response($body, 404); //redirect
+                $body = $app['twig']->render('404.html');
+                return new Response($body, 404);
             }
 
             $visitor = $app['user'];
@@ -41,7 +41,7 @@ class FileControllerProvider implements ControllerProviderInterface
             $fileService->removeFile($file);
             $app['em']->flush();
 
-            $body = "Файл успешно удалён!";
+            $body = $app['twig']->render('file_successfully_deleted.html');
             return new Response($body, 200);
 
         })
@@ -50,8 +50,8 @@ class FileControllerProvider implements ControllerProviderInterface
 
         $controllers->get('/{file}/download', function(Application $app, File $file) {
             if (null === $file->getId()) {
-                $body = 'Файл не найден.';
-                return new Response($body, 404); //redirect
+                $body = $app['twig']->render('404.html');
+                return new Response($body, 404);
             }
 
             return new Response('', 200, array(

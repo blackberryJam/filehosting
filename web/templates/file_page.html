@@ -2,7 +2,7 @@
 
 {% block head %}
     {{ parent() }}
-    <link href= "../styles/file_page.css" rel="stylesheet">
+    <link href= "http://{{ app.rootURL }}/styles/file_page.css" rel="stylesheet">
 {% endblock %}
 
 {% block title %}{{ fileName }}{% endblock %}

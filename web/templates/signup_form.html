@@ -8,7 +8,7 @@
 <div class="form-container">
     <div class="input-group">
         <span class="input-group-addon" id="basic-addon1">Username</span>
-        <input value="{{ user.name }}" name="username" id="username" type="text" class="form-control" placeholder="John" aria-describedby="basic-addon1" autofocus {{ required }}>
+        <input value="{{ user.name }}" name="username" id="username" type="text" class="form-control" placeholder="John" aria-describedby="basic-addon1" autofocus {{ required }} pattern="[-`a-zA-Zа-яА-ЯёЁ\s]{2,40}">
     </div>
     <div class="input-group">
         <span class="input-group-addon" id="basic-addon2">Email</span>

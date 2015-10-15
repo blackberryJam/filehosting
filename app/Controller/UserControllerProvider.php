@@ -22,7 +22,9 @@ class UserControllerProvider implements ControllerProviderInterface
             $user = $userService->logIn($post);
 
             if (\Filehosting\Service\UserService::AUTH_FAILED === $user) {
-                $body = "Authentication failed.";
+                $body = $app['twig']->render('failed.html', array(
+                    'something' => 'Authentication'
+                ));
                 return new Response($body, 200);
             }
 
