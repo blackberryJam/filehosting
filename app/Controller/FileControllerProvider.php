@@ -119,16 +119,21 @@ class FileControllerProvider implements ControllerProviderInterface
             return $app->redirect("/file/{$file->getId()}");
         }
 
+        $ext = $file->getExtension();
+        $ext = $ext === "jpg" ? "jpeg" : $ext;
+        $imagecreate = "imagecreatefrom{$ext}";
+        $image = "image{$ext}";
+
         switch ($mode) {
             case 'thumb':
-                $im = imagecreatefromjpeg("{$app['file.save_directory']}/thumbs/{$file->getThumbnailPath()}");
+                $im = $imagecreate("{$app['file.save_directory']}/thumbs/{$file->getThumbnailPath()}");
                 break;
             case 'original':
-                $im = imagecreatefromjpeg("{$app['file.save_directory']}/{$file->getPath()}");
+                $im = $imagecreate("{$app['file.save_directory']}/{$file->getPath()}");
                 break;
         }
 
-        return new Response(imagejpeg($im), 200, array(
+        return new Response($image($im), 200, array(
             "Content-Type" => "{$file->getMimeType()}"
         ));
     }
