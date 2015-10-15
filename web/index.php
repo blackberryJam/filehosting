@@ -15,7 +15,6 @@ $app->mount('/signup', new Filehosting\Controller\SignUpControllerProvider());
 $app->mount('/user', new Filehosting\Controller\UserControllerProvider());
 
 $app->before(function(Request $request, Silex\Application $app) {
-    $cookies = $app['request']->cookies->all();
     $lm = $app['user.service.login_manager'];
     if ($lm->isLoggedIn()) {
         $id = $lm->extractUserIdFromCookies();

@@ -32,7 +32,7 @@ class UserControllerProvider implements ControllerProviderInterface
         $controllers->get('/logout', function(Application $app) {
             $lm = $app['user.service.login_manager'];
 
-            if ($lm->isLoggedIn()) {
+            if ($app['user.logged_in']) {
                 $lm->logOut();
                 $app['user.logged_in'] = false;
             }

@@ -1,20 +1,26 @@
+{% if attribute(app, "user.logged_in") == true %}
+    {% set required = "" %}
+{% else %}
+    {% set required = "required" %}
+{% endif %}
+
 <form id="signup" name="signup" enctype="multipart/form-data">
 <div class="form-container">
     <div class="input-group">
         <span class="input-group-addon" id="basic-addon1">Username</span>
-        <input value="{{ user.name }}" name="username" id="username" type="text" class="form-control" placeholder="John" aria-describedby="basic-addon1" autofocus>
+        <input value="{{ user.name }}" name="username" id="username" type="text" class="form-control" placeholder="John" aria-describedby="basic-addon1" autofocus {{ required }}>
     </div>
     <div class="input-group">
         <span class="input-group-addon" id="basic-addon2">Email</span>
-        <input value="{{ user.email }}" name="email" id="email" type="email" class="form-control" placeholder="john.doe@example.com" aria-describedby="basic-addon2">
+        <input value="{{ user.email }}" name="email" id="email" type="email" class="form-control" placeholder="john.doe@example.com" aria-describedby="basic-addon2" {{ required }}>
     </div>
     <div class="input-group">
         <span class="input-group-addon" id="basic-addon3">Password</span>
-        <input id="password" name="password" type="password" class="form-control" placeholder="{{ user.password }}" aria-describedby="basic-addon3">
+        <input id="password" name="password" type="password" class="form-control" placeholder="{{ user.password }}" aria-describedby="basic-addon3" {{ required }}>
     </div>
     <div class="input-group">
         <span class="input-group-addon" id="basic-addon4">...and password again</span>
-        <input id="password_repeat" name="password_repeat" type="password" class="form-control" placeholder="{{ user.password }}" aria-describedby="basic-addon4">
+        <input id="password_repeat" name="password_repeat" type="password" class="form-control" placeholder="{{ user.password }}" aria-describedby="basic-addon4" {{ required }}>
     </div>
     <div class="send-button">
         {% if attribute(app, "user.logged_in") == false %}

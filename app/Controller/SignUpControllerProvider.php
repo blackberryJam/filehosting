@@ -19,7 +19,7 @@ class SignUpControllerProvider implements ControllerProviderInterface
         })
         ->before(function(Request $request, Application $app) {
             if ($app['user.logged_in']) {
-                $app->redirect('/');
+                return $app->redirect('/');
             }
         });
 

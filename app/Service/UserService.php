@@ -97,7 +97,7 @@ class UserService
         }
         $this->validateUserName($formData['username']);
         $this->validateEmail($formData['email'], $mode);
-        $this->validatePassword($formData['password'], $formData['password_repeat']);
+        $this->validatePassword($formData['password'], $formData['password_repeat'], $mode);
     }
 
     protected function createActualUserEntity(array $formData = array(), User $user)
@@ -153,11 +153,23 @@ class UserService
         return false;
     }
 
-    protected function validatePassword($password)
+    protected function validatePassword($password, $repeat, $mode)
     {
         $length = mb_strlen((string) $password);
-        if ($length > 255 || $length < 6) {
-            $this->validationErrors['password'] = "Неверный формат password.";
+        switch ($mode) {
+            case 'register':
+                if ($length > 255 || $length < 6 || $password !== $repeat) {
+                    $this->validationErrors['password'] = "Неверный формат password.";
+                }
+                break;
+            case 'edit':
+                if ($password === "" && $repeat === "") {
+                    return;
+                }
+                if ($length > 255 || $length < 6 || $password !== $repeat) {
+                    $this->validationErrors['password'] = "Неверный формат password.";
+                }
+                break;
         }
     }
 
