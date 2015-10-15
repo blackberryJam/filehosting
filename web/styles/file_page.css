@@ -4,6 +4,9 @@
 .file-block div {
     margin: 15px 10px 15px 10px;
 }
+.file-block div .thumbnail {
+    width: 300px;
+}
 .upload-info span {
     border: 1px #dbdbdb solid;
     padding: 7px;

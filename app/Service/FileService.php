@@ -2,29 +2,30 @@
 namespace Filehosting\Service;
 use Filehosting\Model\File;
 use Filehosting\Model\User;
+use Filehosting\Service\ThumbGenerator;
 
 class FileService
 {
     protected $getid3;
     protected $em;
     protected $user;
+    protected $thumbGenerator;
 
     protected $managedFile;
 
     protected $saveDirectory;
     protected $destinationFolder;
 
-    protected $thumbnailPath = null;
-
     protected $mediaInfoFields = array('playtime_string', 'audio', 'video');
     protected $imageExtensions = array('jpg', 'jpeg', 'png', 'gif');
-    protected $maxThumnailResolution = '300x300';
 
-    public function __construct($getid3, \Doctrine\ORM\EntityManager $entityManager, $saveDirectory)
+    public function __construct($getid3, \Doctrine\ORM\EntityManager $entityManager,
+                $saveDirectory, ThumbGenerator $thumbGenerator)
     {
         $this->getid3 = $getid3;
         $this->em = $entityManager;
         $this->saveDirectory = $saveDirectory;
+        $this->thumbGenerator = $thumbGenerator;
     }
 
     public function setUser(User $user)
@@ -35,6 +36,14 @@ class FileService
     public function manageUploadedFile(\SplFileInfo $uploadedFile)
     {
         $file = $this->saveToStorageAndGetFileEntity($uploadedFile);
+
+        if ($this->isImage($file)) {
+            $this->thumbGenerator->setSourceImageFile($file);
+            $this->thumbGenerator->setDirectory("{$this->saveDirectory}");
+            $this->thumbGenerator->generateThumb(ThumbGenerator::MODE_SCALE);
+            $file = $this->thumbGenerator->getManagedFile();
+        }
+
         $this->em->persist($file);
         $this->managedFile = $file;
     }
@@ -64,6 +73,11 @@ class FileService
         if(!$this->hasOwner($file)) {
             $this->removeFileFromStorage($file);
         }
+    }
+
+    protected function isImage(File $file)
+    {
+        return in_array($file->getExtension(), $this->imageExtensions);
     }
 
     protected function removeFileFromDataBase(File $file) {
@@ -160,7 +174,6 @@ class FileService
         $file->setMimeType($uploadedFile->getMimeType());
         $file->setDateUpload(new \DateTime());
         $file->setMediaInfo($this->extractMediaInfo($uploadedFile));
-        $file->setThumbnailPath($this->thumbnailPath);
         $file->setUser($this->user);
         $size = round($uploadedFile->getSize() / (1024 * 1024), 2);
         $file->setSize("{$size} MB");

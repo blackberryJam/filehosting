@@ -104,7 +104,7 @@ class File
 
     public function getDirectory()
     {
-        $pathInfo = pathinfo($this->fullPath);
+        $pathInfo = pathinfo($this->path);
         return $pathInfo['dirname'];
     }
 
@@ -132,7 +132,7 @@ class File
     {
         $extension = "";
 
-        $pathInfo = pathinfo($this->fullPath);
+        $pathInfo = pathinfo($this->path);
         if (isset($pathInfo['extension'])) {
             $extension = $pathInfo['extension'];
         }

@@ -53,10 +53,24 @@ class FileControllerProvider implements ControllerProviderInterface
                 $body = 'Файл не найден.';
                 return new Response($body, 404); //redirect
             }
+
             return new Response('', 200, array(
                 "X-Sendfile" => "{$app['file.save_directory']}/{$file->getPath()}",
                 "Content-Type" => "application/octet-stream",
                 "Content-Disposition" => "attachment; filename=\"{$file->getOriginalName()}\""
+            ));
+        })
+        ->assert('file', '\d+')
+        ->convert('file', 'file.service:getFileByIdOrCreateNewIfNotExists');
+
+        $controllers->get('/{file}/thumb', function(Application $app, File $file) {
+            if (null === $file->getThumbnailPath()) {
+                return $app->redirect("/file/{$file->getId()}");
+            }
+
+            $im = imagecreatefromjpeg("{$app['file.save_directory']}/thumbs/{$file->getThumbnailPath()}");
+            return new Response(imagejpeg($im), 200, array(
+                "Content-Type" => "{$file->getMimeType()}"
             ));
         })
         ->assert('file', '\d+')
@@ -83,7 +97,8 @@ class FileControllerProvider implements ControllerProviderInterface
             'mediaInfoAudioKeys' => isset($mediaInfo['audio']) ? array_keys($mediaInfo['audio']) : array(),
             'mediaInfoVideoKeys' => isset($mediaInfo['video']) ? array_keys($mediaInfo['video']) : array(),
             'userId' => $user->getId(),
-            'visitorId' => $visitor->getId()
+            'visitorId' => $visitor->getId(),
+            'thumbURL' => $file->getThumbnailPath() === null ? "" : "{$app['request']->getUri()}/thumb"
         );
 
         return $values;
