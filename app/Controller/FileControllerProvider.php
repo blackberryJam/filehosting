@@ -63,21 +63,29 @@ class FileControllerProvider implements ControllerProviderInterface
         ->assert('file', '\d+')
         ->convert('file', 'file.service:getFileByIdOrCreateNewIfNotExists');
 
-        $controllers->get('/{file}/thumb', function(Application $app, File $file) {
-            if (null === $file->getThumbnailPath()) {
-                return $app->redirect("/file/{$file->getId()}");
-            }
-
-            $im = imagecreatefromjpeg("{$app['file.save_directory']}/thumbs/{$file->getThumbnailPath()}");
-            return new Response(imagejpeg($im), 200, array(
-                "Content-Type" => "{$file->getMimeType()}"
+        $controllers->get('/{file}/realsize', function(Application $app, $file) {
+            $body = $app['twig']->render('img_original.html', array(
+                'originalURL' => "/file/{$file}/original"
             ));
+            return new Response($body, 200);
+        })
+        ->assert('file', '\d+');
+
+        $controllers->get('/{file}/thumb', function(Application $app, File $file) {
+            return $this->showImage($app, $file, 'thumb');
+        })
+        ->assert('file', '\d+')
+        ->convert('file', 'file.service:getFileByIdOrCreateNewIfNotExists');
+
+        $controllers->get('/{file}/original', function(Application $app, File $file) {
+            return $this->showImage($app, $file, 'original');
         })
         ->assert('file', '\d+')
         ->convert('file', 'file.service:getFileByIdOrCreateNewIfNotExists');
 
         return $controllers;
     }
+
 
     protected function createArrayOfValues(File $file, Application $app)
     {
@@ -98,9 +106,30 @@ class FileControllerProvider implements ControllerProviderInterface
             'mediaInfoVideoKeys' => isset($mediaInfo['video']) ? array_keys($mediaInfo['video']) : array(),
             'userId' => $user->getId(),
             'visitorId' => $visitor->getId(),
-            'thumbURL' => $file->getThumbnailPath() === null ? "" : "{$app['request']->getUri()}/thumb"
+            'thumbURL' => $file->getThumbnailPath() === null ? "" : "{$app['request']->getUri()}/thumb",
+            'realsizeURL' => $file->getThumbnailPath() === null ? "" : "{$app['request']->getUri()}/realsize"
         );
 
         return $values;
+    }
+
+    protected function showImage(Application $app, File $file, $mode)
+    {
+        if (null === $file->getThumbnailPath()) {
+            return $app->redirect("/file/{$file->getId()}");
+        }
+
+        switch ($mode) {
+            case 'thumb':
+                $im = imagecreatefromjpeg("{$app['file.save_directory']}/thumbs/{$file->getThumbnailPath()}");
+                break;
+            case 'original':
+                $im = imagecreatefromjpeg("{$app['file.save_directory']}/{$file->getPath()}");
+                break;
+        }
+
+        return new Response(imagejpeg($im), 200, array(
+            "Content-Type" => "{$file->getMimeType()}"
+        ));
     }
 }

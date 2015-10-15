@@ -36,4 +36,6 @@ $app['file.service'] = function($app) {
                 $app['file.save_directory'], $app['file.service.thumb_generator']);
 };
 
+$app['rootURL'] = $_SERVER['HTTP_HOST'];
+
 $app->register(new Silex\Provider\TwigServiceProvider(), array('twig.path' => dirname(__DIR__) . "/web/templates"));
