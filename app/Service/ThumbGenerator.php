@@ -92,7 +92,7 @@ class ThumbGenerator
         $thumbPath = "{$this->sourceImageFile->getDirectory()}/thumb_{$this->sourceImageFile->getBaseName()}";
         $this->imageAny($thumb, "{$this->thumbDirectory}/{$thumbPath}");
 
-        return $thumbPath;
+        return "thumbs/{$thumbPath}";
     }
 
     protected function scaleImage()
@@ -126,7 +126,7 @@ class ThumbGenerator
         $thumbPath = "{$this->sourceImageFile->getDirectory()}/thumb_{$this->sourceImageFile->getBaseName()}";
         $this->imageAny($thumb, "{$this->thumbDirectory}/{$thumbPath}");
 
-        return $thumbPath;
+        return "thumbs/{$thumbPath}";
     }
 
     protected function imageCreateFromAny($path)

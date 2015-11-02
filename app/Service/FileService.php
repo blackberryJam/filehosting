@@ -75,7 +75,7 @@ class FileService
         }
     }
 
-    protected function isImage(File $file)
+    public function isImage(File $file)
     {
         return in_array($file->getExtension(), $this->imageExtensions);
     }
@@ -86,6 +86,9 @@ class FileService
 
     protected function removeFileFromStorage(File $file) {
         unlink("{$this->saveDirectory}/{$file->getPath()}");
+        if (null !== $file->getThumbnailPath()) {
+            unlink("{$this->saveDirectory}/{$file->getThumbnailPath()}");
+        }
     }
 
     protected function hasOwner(File $file)

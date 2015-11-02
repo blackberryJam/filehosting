@@ -24,6 +24,7 @@ class File
 
     /**
      * @ORM\OneToMany(targetEntity="Comment", mappedBy="file")
+     * @ORM\OrderBy({"path" = "ASC"})
      */
     protected $comments;
 
@@ -153,6 +154,11 @@ class File
     public function addComment(Comment $comment)
     {
         $this->comments[] = $comment;
+    }
+
+    public function getComments()
+    {
+        return $this->comments;
     }
 
     public function setUser(User $user)

@@ -5,11 +5,11 @@
     <link href= "http://{{ app.rootURL }}/styles/file_page.css" rel="stylesheet">
 {% endblock %}
 
-{% block title %}{{ fileName }}{% endblock %}
+{% block title %}{{ file.originalName }}{% endblock %}
 
 {% block content %}
     <div class="page-header">
-        <h1>{{ fileName }} <small>{{ fileSize }}</small></h1>
+        <h1>{{ file.originalName }} <small>{{ file.size }}</small></h1>
     </div>
     <div class="file-block">
         <div class="embedded">
@@ -22,11 +22,11 @@
         </div>
         {% if userId == visitorId %}
             <div class="delete-button">
-                <a href="{{ removeUrl }}"><button type="button" class="btn btn-danger">Remove</button></a>
+                <a href="{{ removeUrl }}"><button type="button" class="btn-xs btn-danger">Remove</button></a>
             </div>
         {% endif %}
         <div class="upload-info">
-            <span><strong>Owner:</strong> {{ userName }} | <strong>Upload date:</strong> {{ dateUpload }}</span>
+            <span><strong>Owner:</strong> {{ userName }} | <strong>Upload date:</strong> {{ file.dateUpload|date("Y-m-d, H:i:s") }}</span>
         </div>
         {% if mediaInfo is not empty %}
             <h2>MediaInfo</h2>
@@ -65,8 +65,21 @@
             </div>
         {% endif %}
     </div>
-    <div class="comments-block">
-        <h2>Comments <small></small></h2>
-
+    <div class="comments-block" id="comments-block">
+        <div class="comments-header page-header">
+            <h2>Comments <small>{{ numberOfComments }}</small> <button type="button" class="btn btn-default comment-button-top comment-form-renderer" id="add-comment-button-top" data-position="top">Add comment</button></h2>
+        </div>
+        <div class="comment-form-container" id="comment-form-container-top"></div>
+        <div id="comments-container" class="comments-container">
+            {% for comment in file.comments %}
+                {% include 'comment.html' %}
+            {% endfor %}
+        </div>
+        <div class="comments-footer">
+            <div class="footer-comment-button-container"><button type="button" class="btn btn-default comment-button-bottom comment-form-renderer" id="add-comment-button-bottom" data-position="bottom">Add comment</button></div>
+            <div class="comment-form-container form-group" id="comment-form-container-bottom"></div>
+        </div>
     </div>
+    <script src="../scripts/comments.js"></script>
+    <script src="../scripts/POSTRequestGenerator.js"></script>
 {% endblock %}

@@ -21,3 +21,89 @@
     text-align: center;
     background-color: whitesmoke;
 }
+.comments-header {
+    width: 600px;
+}
+.comments-block .comment-button-top {
+    float: right;
+}
+.comments-block form textarea {
+    width: inherit;
+    height: 90px;
+}
+.comments-block .form-group {
+    width: 600px;
+}
+.comments-block form div {
+    margin: 5px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 400px;
+}
+.comments-block form {
+    margin-left: auto;
+    margin-right: auto;
+}
+.comments-block form button {
+    width: inherit;
+}
+.comment-form-container {
+    width: 600px;
+}
+.comments-block .form-group {
+    border-bottom: 1px solid #eeeeee;
+    padding-bottom: 15px;
+}
+.comments-footer {
+    width: 600px;
+    border-top: 1px solid #eeeeee;
+}
+.comments-footer div {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: right;
+}
+.comment {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border: 2px solid #65a4c9;
+    border-left: 5px solid #65a4c9;
+    padding: 7px;
+    width: 625px;
+}
+.comment .comment-info {
+    background: #def4f4;
+}
+.comment .comment-body {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+.depth-2 {
+    margin-left: 30px;
+}
+.depth-3 {
+    margin-left: 60px;
+}
+.depth-4 {
+    margin-left: 90px;
+}
+.depth-5 {
+    margin-left: 120px;
+}
+.depth-6 {
+    margin-left: 150px;
+}
+.depth-7 {
+    margin-left: 180px;
+}
+.depth-8 {
+    margin-left: 210px;
+}
+.depth-9 {
+    margin-left: 240px;
+}
+.depth-10 {
+    margin-left: 270px;
+}

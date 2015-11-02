@@ -14,6 +14,8 @@ $app->mount('/signup', new Filehosting\Controller\SignUpControllerProvider());
 
 $app->mount('/user', new Filehosting\Controller\UserControllerProvider());
 
+$app->mount('/comment', new Filehosting\Controller\CommentControllerProvider());
+
 $app->before(function(Request $request, Silex\Application $app) {
     $lm = $app['user.service.login_manager'];
     if ($lm->isLoggedIn()) {
@@ -22,17 +24,5 @@ $app->before(function(Request $request, Silex\Application $app) {
         $app['user.logged_in'] = true;
     }
 });
-
-/*
-$app->get("/", function() {
-    return file_get_contents(__DIR__ . "/web/templates/template.html.php");
-});
-$app->post("/", function(Request $request, Silex\Application $app) {
-    $fileUploaded = $request->files->get("fileToUpload");
-    //$responseText = "Файл \"{$fileUploaded->getClientOriginalName()}\" загружен!";
-    $responseText = $fileUploaded->getRealPath();
-    return new Response((string) $responseText, 200);
-});
-*/
 
 $app->run();

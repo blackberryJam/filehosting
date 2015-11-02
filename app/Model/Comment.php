@@ -5,9 +5,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="comments")
+ * @ORM\Table(name="comments", indexes={@ORM\Index(name="path_idx", columns={"path"}),
+ *                                      @ORM\Index(name="parentPath_idx", columns={"parentPath"})})
  */
-class Comment
+class Comment implements \JsonSerializable
 {
     /**
      * @ORM\Id
@@ -24,7 +25,7 @@ class Comment
 
     /**
      * @ORM\ManyToOne(targetEntity="File", inversedBy="comments")
-     * @ORM\JoinColumn(name="file_id", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\JoinColumn(name="file_id", referencedColumnName="id", onDelete="CASCADE", nullable=FALSE)
      */
     protected $file;
 
@@ -39,15 +40,19 @@ class Comment
     protected $date;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Comment", inversedBy="childs")
-     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id")
+     * @ORM\Column(type="string", length=39, nullable=FALSE)
      */
-    protected $parent;
+    protected $path;
 
     /**
-     * @ORM\OneToMany(targetEntity="Comment", mappedBy="parent")
+     * @ORM\Column(type="string", length=35, nullable=TRUE)
      */
-    protected $childs;
+    protected $parentPath = null;
+
+    /**
+     * @ORM\Column(type="integer", nullable=FALSE)
+     */
+    protected $number;
 
     public function getId()
     {
@@ -96,29 +101,52 @@ class Comment
         $this->date = $date;
     }
 
-    public function getParent()
+    public function getPath()
     {
-        return $this->parent;
+        return $this->path;
     }
 
-    public function setParent(Comment $comment)
+    public function setPath($path)
     {
-        $comment->addChild($this);
-        $this->parent = $parent;
+        $this->path = $path;
+        $this->depth = $this->getDepth();
+
+        $arr = explode("-", $path);
+        $this->number = end($arr);
+
+        if ($this->depth !== 1) {
+            $this->parentPath = substr_replace($this->path, "", -4);
+        } else {
+            $this->parentPath = null;
+        }
     }
 
-    public function getChilds()
+    public function getParentPath()
     {
-        return $this->childs;
+        return $this->parentPath;
     }
 
-    public function addChild(Comment $comment)
+    public function getNumber()
     {
-        $this->childs[] = $comment;
+        return $this->number;
     }
 
-    public function __construct()
+    public function getDepth()
     {
-        $this->children = new ArrayCollection();
+        return count(explode("-", $this->path));
+    }
+
+    public function jsonSerialize()
+    {
+        return array(
+            'id' => $this->id,
+            'userName' => $this->user->getName(),
+            'body' => $this->body,
+            'date' => $this->date->format("Y-m-d, H:i:s"),
+            'path' => $this->path,
+            'parentPath' => $this->parentPath ? $this->parentPath : "",
+            'number' => (int) $this->number,
+            'depth' => $this->getDepth()
+        );
     }
 }

@@ -48,7 +48,7 @@ class FileControllerProvider implements ControllerProviderInterface
         ->assert('file', '\d+')
         ->convert('file', 'file.service:getFileByIdOrCreateNewIfNotExists');
 
-        $controllers->get('/{file}/download', function(Application $app, File $file) {
+        $controllers->get('/{file}/download/{name}', function(Application $app, File $file, $name) {
             if (null === $file->getId()) {
                 $body = $app['twig']->render('404.html');
                 return new Response($body, 404);
@@ -57,19 +57,24 @@ class FileControllerProvider implements ControllerProviderInterface
             return new Response('', 200, array(
                 "X-Sendfile" => "{$app['file.save_directory']}/{$file->getPath()}",
                 "Content-Type" => "application/octet-stream",
-                "Content-Disposition" => "attachment; filename=\"{$file->getOriginalName()}\""
+                "Content-Disposition" => "attachment;"
             ));
         })
         ->assert('file', '\d+')
         ->convert('file', 'file.service:getFileByIdOrCreateNewIfNotExists');
 
-        $controllers->get('/{file}/realsize', function(Application $app, $file) {
+        $controllers->get('/{file}/realsize', function(Application $app, File $file) {
+            if (!$app['file.service']->isImage($file)) {
+                $body = $app['twig']->render('404.html');
+                return new Response($body, 404);
+            }
             $body = $app['twig']->render('img_original.html', array(
-                'originalURL' => "/file/{$file}/original"
+                'originalURL' => "/file/{$file->getId()}/original"
             ));
             return new Response($body, 200);
         })
-        ->assert('file', '\d+');
+        ->assert('file', '\d+')
+        ->convert('file', 'file.service:getFileByIdOrCreateNewIfNotExists');
 
         $controllers->get('/{file}/thumb', function(Application $app, File $file) {
             return $this->showImage($app, $file, 'thumb');
@@ -95,19 +100,18 @@ class FileControllerProvider implements ControllerProviderInterface
         $mediaInfo = $app['file.service']->getArrayOfMediaInfo($file);
 
         $values = array(
-            'downloadUrl' => "{$app['request']->getUri()}/download",
+            'downloadUrl' => "{$app['request']->getUri()}/download/{$file->getOriginalName()}",
             'removeUrl' => "{$app['request']->getUri()}/remove",
-            'fileName' => $file->getOriginalName(),
-            'dateUpload' => $file->getDateUpload()->format("Y-m-d, H:i:s"),
             'userName' => $userName === null ? "Anonymous" : $userName,
-            'fileSize' => $file->getSize(),
+            'file' => $file,
             'mediaInfo' => $mediaInfo,
             'mediaInfoAudioKeys' => isset($mediaInfo['audio']) ? array_keys($mediaInfo['audio']) : array(),
             'mediaInfoVideoKeys' => isset($mediaInfo['video']) ? array_keys($mediaInfo['video']) : array(),
             'userId' => $user->getId(),
             'visitorId' => $visitor->getId(),
             'thumbURL' => $file->getThumbnailPath() === null ? "" : "{$app['request']->getUri()}/thumb",
-            'realsizeURL' => $file->getThumbnailPath() === null ? "" : "{$app['request']->getUri()}/realsize"
+            'realsizeURL' => $file->getThumbnailPath() === null ? "" : "{$app['request']->getUri()}/realsize",
+            'numberOfComments' => count($file->getComments())
         );
 
         return $values;
@@ -126,7 +130,7 @@ class FileControllerProvider implements ControllerProviderInterface
 
         switch ($mode) {
             case 'thumb':
-                $im = $imagecreate("{$app['file.save_directory']}/thumbs/{$file->getThumbnailPath()}");
+                $im = $imagecreate("{$app['file.save_directory']}/{$file->getThumbnailPath()}");
                 break;
             case 'original':
                 $im = $imagecreate("{$app['file.save_directory']}/{$file->getPath()}");
