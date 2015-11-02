@@ -9,15 +9,17 @@ DROP TABLE IF EXISTS `comments`;
 CREATE TABLE `comments` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) DEFAULT NULL,
-  `file_id` int(11) DEFAULT NULL,
-  `parent_id` int(11) DEFAULT NULL,
+  `file_id` int(11) NOT NULL,
   `body` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `date` datetime NOT NULL,
+  `path` varchar(39) COLLATE utf8_unicode_ci NOT NULL,
+  `parentPath` varchar(35) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `number` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `IDX_5F9E962AA76ED395` (`user_id`),
   KEY `IDX_5F9E962A93CB796C` (`file_id`),
-  KEY `IDX_5F9E962A727ACA70` (`parent_id`),
-  CONSTRAINT `FK_5F9E962A727ACA70` FOREIGN KEY (`parent_id`) REFERENCES `comments` (`id`),
+  KEY `path_idx` (`path`),
+  KEY `parentPath_idx` (`parentPath`),
   CONSTRAINT `FK_5F9E962A93CB796C` FOREIGN KEY (`file_id`) REFERENCES `files` (`id`) ON DELETE CASCADE,
   CONSTRAINT `FK_5F9E962AA76ED395` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -53,4 +55,4 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
--- 2015-10-10 22:57:09
+-- 2015-11-02 17:15:00
