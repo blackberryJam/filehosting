@@ -43,7 +43,6 @@ dropbox.addEventListener("drop", function(event) {
     event.preventDefault();
 
     var filesDropped = event.dataTransfer.files;
-    //var added = files.length;
     for (var i = 0; i < filesDropped.length; i++) {
         files.push(filesDropped[i]);
 
