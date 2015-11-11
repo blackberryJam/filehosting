@@ -42,4 +42,4 @@ $app['comment.service'] = function($app) {
 
 $app['rootURL'] = $_SERVER['HTTP_HOST'];
 
-$app->register(new Silex\Provider\TwigServiceProvider(), array('twig.path' => dirname(__DIR__) . "/web/templates"));
+$app->register(new Silex\Provider\TwigServiceProvider(), array('twig.path' => dirname(__DIR__) . "/templates"));

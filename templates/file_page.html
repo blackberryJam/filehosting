@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block head %}
+    {{ parent() }}
+    <link href= "http://{{ app.rootURL }}/styles/file_page.css" rel="stylesheet">
+{% endblock %}
+
+{% block title %}{{ file.originalName }}{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>{{ file.originalName }} <small>{{ (file.size / (1024 * 1024))|round(2)}} MB</small></h1>
+    </div>
+    <div class="file-block">
+        <div class="embedded">
+            {% if thumbURL is not empty %}
+                <a href="{{ realsizeURL }}" class="thumbnail"><img src="{{ thumbURL }}"></a>
+            {% endif %}
+        </div>
+        <div class="download-button">
+            <a href="{{ downloadUrl }}"><button type="button" class="btn-lg btn-primary">Download</button></a>
+        </div>
+        {% if userId == visitorId %}
+            <div class="delete-button">
+                <button id="remove-file-button" type="button" class="btn-xs btn-danger">Remove</button>
+            </div>
+        {% endif %}
+        <div class="upload-info">
+            <span><strong>Owner:</strong> {{ userName }} | <strong>Upload date:</strong> {{ file.dateUpload|date("Y-m-d, H:i:s") }}</span>
+        </div>
+        {% if mediaInfo is not empty %}
+            <h2>MediaInfo</h2>
+            <div class="media-info">
+                <table class="table table-condensed media-info-table">
+                    <tbody>
+                        {% if attribute(mediaInfo, 'playtime_string') is not empty %}
+                            <tr>
+                                <td>Playtime</td><td>{{ attribute(mediaInfo, 'playtime_string') }}</td>
+                            </tr>
+                        {% endif %}
+                        {% if mediaInfoAudioKeys is not empty %}
+                            <tr class="header-table">
+                                <td colspan="2">AudioInfo</td>
+                            </tr>
+                            {% set audio = mediaInfo.audio %}
+                            {% for item in mediaInfoAudioKeys %}
+                                <tr>
+                                    <td>{{ item }}</td><td>{{ attribute(audio, item) }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                        {% if mediaInfoVideoKeys is not empty %}
+                            <tr class="header-table">
+                                <td colspan="2">PictureInfo</td>
+                            </tr>
+                            {% set video = mediaInfo.video %}
+                            {% for item in mediaInfoVideoKeys %}
+                                <tr>
+                                    <td>{{ item }}</td><td>{{ attribute(video, item) }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+    <div class="comments-block" id="comments-block">
+        <div class="comments-header page-header">
+            <h2>Comments <small id="comments-counter">{{ numberOfComments }}</small> <button type="button" class="btn btn-default comment-button-top comment-form-renderer" id="add-comment-button-top" data-position="top">Add comment</button></h2>
+        </div>
+        <div class="comment-form-container" id="comment-form-container-top"></div>
+        <div id="comments-container" class="comments-container">
+            {% for comment in file.comments %}
+                {% include 'comment.html' %}
+            {% endfor %}
+        </div>
+        <div class="comments-footer">
+            <div class="footer-comment-button-container"><button type="button" class="btn btn-default comment-button-bottom comment-form-renderer" id="add-comment-button-bottom" data-position="bottom">Add comment</button></div>
+            <div class="comment-form-container form-group" id="comment-form-container-bottom"></div>
+        </div>
+    </div>
+    <script src="../scripts/file_page-common.js"></script>
+    <script src="../scripts/file_page-comments.js"></script>
+    <script src="../scripts/file_page-removeFile.js"></script>
+    <script src="../scripts/POSTRequestGenerator.js"></script>
+{% endblock %}
