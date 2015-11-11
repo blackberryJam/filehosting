@@ -45,10 +45,11 @@ class UserControllerProvider implements ControllerProviderInterface
         $controllers->get('/{user}', function(Application $app, Request $request, \Filehosting\Model\User $user) {
             $visitorId = $app['user.service.login_manager']->extractUserIdFromCookies();
 
+            if ($visitorId === null) {
+                return $app->redirect('/');
+            }
+
             if ($visitorId != $user->getId()) {
-                if ($visitorId === null) {
-                    return $app->redirect('/');
-                }
                 return $app->redirect("/user/{$visitorId}");
             }
 

@@ -30,7 +30,7 @@ class UserLoginManager
 
     public function extractUserIdFromCookies()
     {
-        return $this->cookies['id'];
+        return $this->isLoggedIn() ? $this->cookies['id'] : null;
     }
 
     public function isLoggedIn()

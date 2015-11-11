@@ -28,3 +28,8 @@
 .filelist li {
     padding: 10px;
 }
+.center-h {
+    margin-left: auto;
+    margin-right: auto;
+    width: 750px;
+}
