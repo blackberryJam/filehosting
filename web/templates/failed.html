@@ -10,11 +10,11 @@
         <div class="col-md-12">
             <div class="error-template">
                 <h1>Oops!</h1>
-                <h2>{{ something }} failed</h2>
+                <h2>{{ subject }} failed</h2>
                 <div class="error-details">
                     Sorry, the entered data is not correct.
                 </div>
-                {% if something == "Validation" %}
+                {% if subject == "Validation" %}
                     {% if attribute(app, "user.logged_in") == true %}
                         {% set btnUrl = "/user/" ~ userID %}
                     {% else %}

@@ -16,7 +16,8 @@ $connection = array(
     'user' => 'root',
     'password' => 'ghbdtndfcz',
     'host' => 'localhost',
-    'driver' => 'pdo_mysql'
+    'driver' => 'pdo_mysql',
+    'charset' => 'utf8'
 );
 
 $entityManager = EntityManager::create($connection, $config);

@@ -45,12 +45,11 @@ var getCommentFormToggle = function(targetButton) {
 };
 
 var renderNewComment = function(commentObject) {
-    console.dir(commentObject);
-
     var commentDiv = document.createElement("div");
     commentDiv.className = "depth-" + commentObject.depth + " comment parent-" + commentObject.parentPath;
     commentDiv.setAttribute("id", "comment-" + commentObject.path);
     commentDiv.dataset.number = commentObject.number;
+    commentDiv.dataset.path = commentObject.path;
 
     var commentInfo = document.createElement("div");
     commentInfo.className = "comment-info";
@@ -78,22 +77,26 @@ var renderNewComment = function(commentObject) {
 
     bodyDiv.appendChild(bodyP);
 
-    var buttonDiv = document.createElement("div");
+    if (commentObject.path.length <= 35) {
+        var buttonDiv = document.createElement("div");
 
-    var button = document.createElement("button");
-    button.className = "btn-xs btn-default answer-form-renderer comment-form-renderer";
-    button.dataset.position = commentObject.path;
-    button.innerHTML = "Send!";
-    button.setAttribute("type", "button");
+        var button = document.createElement("button");
+        button.className = "btn-xs btn-default answer-form-renderer comment-form-renderer";
+        button.dataset.position = commentObject.path;
+        button.innerHTML = "Answer";
+        button.setAttribute("type", "button");
 
-    buttonDiv.appendChild(button);
+        buttonDiv.appendChild(button);
+    }
 
     var formContainer = document.createElement("div");
     formContainer.setAttribute("id", "comment-form-container-" + commentObject.path);
 
     commentDiv.appendChild(commentInfo);
     commentDiv.appendChild(bodyDiv);
-    commentDiv.appendChild(buttonDiv);
+    if (commentObject.path.length <= 35) {
+        commentDiv.appendChild(buttonDiv);
+    }
     commentDiv.appendChild(formContainer);
 
     var refNode = getActualNode(commentObject.parentPath);
@@ -105,7 +108,7 @@ var renderNewComment = function(commentObject) {
 };
 
 var getActualNode = function(parentPath) {
-    if (parentPath === null) {
+    if (parentPath === "") {
         return;
     }
 
@@ -116,16 +119,34 @@ var getActualNode = function(parentPath) {
         return document.getElementById("comment-" + parentPath);
     }
 
+    return getLastChildRecursive(childs);
+};
+
+var getLastChildRecursive = function(childs) {
     var maxNumber = 0;
-    var actualNode = null;
+    var lastChild = null;
     childs.forEach(function(child, i, childs) {
         if (child.dataset.number > maxNumber) {
             maxNumber = child.dataset.number;
-            actualNode = child;
+            lastChild = child;
         }
     });
 
-    return actualNode;
+    var childChilds = document.querySelectorAll(".parent-" + lastChild.dataset.path);
+    childChilds = Array.prototype.slice.call(childChilds);
+
+    if (childChilds.length === 0) {
+        return lastChild;
+    }
+
+    return getLastChildRecursive(childChilds);
+};
+
+var increaseCommentCounter = function() {
+    var counter = document.getElementById("comments-counter");
+    var num = parseInt(counter.innerHTML);
+    num++;
+    counter.innerHTML = String(num);
 };
 
 var sendCommentForm = function(targetButton) {
@@ -146,7 +167,14 @@ var sendCommentForm = function(targetButton) {
             return;
         }
 
-        renderNewComment(JSON.parse(xhr.response));
+        var response = JSON.parse(xhr.response);
+        if (response === "validation_failed") {
+            alert("Неверный формат комментария.");
+            return;
+        }
+
+        renderNewComment(response);
+        increaseCommentCounter();
     };
     xhr.send(requestBody);
 
@@ -171,12 +199,6 @@ var createCommentObject = function(position) {
     return comment;
 };
 
-var getFileId = function() {
-    var path = window.location.pathname;
-    path = path.split("/");
-    return path[2];
-};
-
 var commentsBlock = document.getElementById("comments-block");
 commentsBlock.addEventListener("click", function(event) {
     var target = event.target;
@@ -197,7 +219,7 @@ commentsBlock.addEventListener("click", function(event) {
             toggleForm();
             break;
         case "comment-form-sender":
-            var comment = sendCommentForm(target);
+            sendCommentForm(target);
             break;
     }
 });

@@ -8,6 +8,10 @@ class CommentService
 {
     const VALIDATION_FAILED = 0;
 
+    const WRONG_BODY_LENGTH = 0;
+    const WRONG_PATH_LENGTH = 0;
+    const WRONG_PATH_FORMAT = 1;
+
     protected $em;
     protected $user;
     protected $file;
@@ -51,12 +55,25 @@ class CommentService
 
     protected function validateCommentBody($commentBody)
     {
-        //TODO!!!
+        $commentBody = (string) $commentBody;
+        $length = mb_strlen($commentBody);
+        if ($length > 255) {
+            $this->validationErrors['commentBody'] = self::WRONG_BODY_LENGTH;
+        }
     }
 
     protected function validateCommentParentPath($parentPath)
     {
-        //TODO!!!
+        $parentPath = (string) $parentPath;
+        $pattern = "/(([0-9]{3}[-])+[0-9]{3})?/ui";
+
+        if (mb_strlen($parentPath) > 35) {
+            $this->validationErrors['parentPath'] = self::WRONG_PATH_LENGTH;
+        }
+
+        if (!preg_match($pattern, $parentPath)) {
+            $this->validationErrors['parentPath'] = self::WRONG_PATH_FORMAT;
+        }
     }
 
     protected function createCommentEntity($formData)

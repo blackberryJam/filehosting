@@ -127,7 +127,7 @@ class FileService
 
     protected function convertToString($array)
     {
-        return http_build_query($array);
+        return json_encode($array);
     }
 
     public function getArrayOfMediaInfo(File $file)
@@ -138,7 +138,7 @@ class FileService
     protected function convertMediaInfoToArray($mediaInfo)
     {
         if (isset($mediaInfo)) {
-            parse_str($mediaInfo, $mediaInfo);
+            $mediaInfo = json_decode($mediaInfo, true);
             if (!isset($mediaInfo['playtime_string'])) {
                 $mediaInfo['playtime_string'] = "";
             }
@@ -178,8 +178,7 @@ class FileService
         $file->setDateUpload(new \DateTime());
         $file->setMediaInfo($this->extractMediaInfo($uploadedFile));
         $file->setUser($this->user);
-        $size = round($uploadedFile->getSize() / (1024 * 1024), 2);
-        $file->setSize("{$size} MB");
+        $file->setSize($uploadedFile->getSize());
 
         return $file;
 

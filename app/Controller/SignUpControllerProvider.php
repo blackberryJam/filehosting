@@ -32,7 +32,7 @@ class SignUpControllerProvider implements ControllerProviderInterface
             if (\Filehosting\Service\UserService::VALIDATION_FAILED === $user) {
                 $user = $userService->identifyUser($request->cookies->all(), false);
                 $body = $app['twig']->render('failed.html', array(
-                    'something' => 'Validation',
+                    'subject' => 'Validation',
                     'userID' => $user->getId() === null ? "" : $user->getId()
                 ));
                 return new Response($body, 200);

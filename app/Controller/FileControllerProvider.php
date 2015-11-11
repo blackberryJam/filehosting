@@ -14,6 +14,11 @@ class FileControllerProvider implements ControllerProviderInterface
 
         $controllers->get('/{file}', function(Application $app, File $file) {
             if (null === $file->getId()) {
+                if (isset($_COOKIE['file_successfully_removed'])) {
+                    setcookie('file_successfully_removed', (string) mt_rand(), time() - 1, "/", $_SERVER['HTTP_HOST']);
+                    $body = $app['twig']->render('file_successfully_deleted.html');
+                    return new Response($body, 200);
+                }
                 $body = $app['twig']->render('404.html');
                 return new Response($body, 404);
             }
@@ -26,14 +31,17 @@ class FileControllerProvider implements ControllerProviderInterface
         ->assert('file', '\d+')
         ->convert('file', 'file.service:getFileByIdOrCreateNewIfNotExists');
 
-        $controllers->get('/{file}/remove', function(Application $app, Request $request, File $file) {
+        $controllers->post('/{file}/remove', function(Application $app, Request $request, File $file) {
             if (null === $file->getId()) {
                 $body = $app['twig']->render('404.html');
                 return new Response($body, 404);
             }
 
+            $post = $request->request->all();
+
             $visitor = $app['user'];
-            if ($visitor->getId() != $file->getUser()->getId()) {
+            if ($visitor->getId() != $file->getUser()->getId() ||
+                $post['fileId'] != $file->getId()) {
                 return $app->redirect("/file/{$file->getId()}");
             }
 
@@ -41,8 +49,9 @@ class FileControllerProvider implements ControllerProviderInterface
             $fileService->removeFile($file);
             $app['em']->flush();
 
-            $body = $app['twig']->render('file_successfully_deleted.html');
-            return new Response($body, 200);
+            setcookie('file_successfully_removed', (string) mt_rand(), time() + 3600 * 24, "/", $_SERVER['HTTP_HOST']);
+
+            return $app->json("ok");
 
         })
         ->assert('file', '\d+')

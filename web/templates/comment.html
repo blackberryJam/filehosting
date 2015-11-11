@@ -1,12 +1,14 @@
-<div class="depth-{{ comment.depth }} comment parent-{{ comment.parentPath }}" data-number="{{ comment.number }}" id="comment-{{ comment.path }}">
+<div class="depth-{{ comment.depth }} comment parent-{{ comment.parentPath }}" data-path="{{ comment.path }}" data-number="{{ comment.number }}" id="comment-{{ comment.path }}">
     <div class="comment-info">
         <p><span class="comment-user">{{ comment.user.name|default("Anonymous") }}</span>, <span class="comment-date">{{ comment.date|date("Y-m-d, H:i:s") }}</span></p>
     </div>
     <div class="comment-body">
         <p>{{ comment.body }}</p>
     </div>
-    <div>
-        <button type="button" class="btn-xs btn-default answer-form-renderer comment-form-renderer" data-position="{{ comment.path }}">Answer</button>
-    </div>
+    {% if comment.path|length <= 35 %}
+        <div>
+            <button type="button" class="btn-xs btn-default answer-form-renderer comment-form-renderer" data-position="{{ comment.path }}">Answer</button>
+        </div>
+    {% endif %}
     <div id="comment-form-container-{{ comment.path }}"></div>
 </div>

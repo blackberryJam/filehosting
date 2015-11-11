@@ -9,7 +9,7 @@
 
 {% block content %}
     <div class="page-header">
-        <h1>{{ file.originalName }} <small>{{ file.size }}</small></h1>
+        <h1>{{ file.originalName }} <small>{{ (file.size / (1024 * 1024))|round(2)}} MB</small></h1>
     </div>
     <div class="file-block">
         <div class="embedded">
@@ -22,7 +22,7 @@
         </div>
         {% if userId == visitorId %}
             <div class="delete-button">
-                <a href="{{ removeUrl }}"><button type="button" class="btn-xs btn-danger">Remove</button></a>
+                <button id="remove-file-button" type="button" class="btn-xs btn-danger">Remove</button>
             </div>
         {% endif %}
         <div class="upload-info">
@@ -67,7 +67,7 @@
     </div>
     <div class="comments-block" id="comments-block">
         <div class="comments-header page-header">
-            <h2>Comments <small>{{ numberOfComments }}</small> <button type="button" class="btn btn-default comment-button-top comment-form-renderer" id="add-comment-button-top" data-position="top">Add comment</button></h2>
+            <h2>Comments <small id="comments-counter">{{ numberOfComments }}</small> <button type="button" class="btn btn-default comment-button-top comment-form-renderer" id="add-comment-button-top" data-position="top">Add comment</button></h2>
         </div>
         <div class="comment-form-container" id="comment-form-container-top"></div>
         <div id="comments-container" class="comments-container">
@@ -80,6 +80,8 @@
             <div class="comment-form-container form-group" id="comment-form-container-bottom"></div>
         </div>
     </div>
-    <script src="../scripts/comments.js"></script>
+    <script src="../scripts/file_page-common.js"></script>
+    <script src="../scripts/file_page-comments.js"></script>
+    <script src="../scripts/file_page-removeFile.js"></script>
     <script src="../scripts/POSTRequestGenerator.js"></script>
 {% endblock %}
