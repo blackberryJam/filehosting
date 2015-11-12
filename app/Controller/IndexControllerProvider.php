@@ -27,7 +27,9 @@ class IndexControllerProvider implements ControllerProviderInterface
             $fileService->setUser($app['user']);
             $fileService->manageUploadedFile($uploadedFile);
 
-            if (!$fileService->getManagedFile()) {
+            $file = $fileService->getManagedFile();
+
+            if (!$file) {
                 throw new Exception('Ошибка обработки файла.');
             }
 

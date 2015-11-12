@@ -183,7 +183,7 @@ class UserService
         return $token;
     }
 
-    protected function setCookieToken()
+    public function setCookieToken()
     {
         $string = $this->generateCookieToken();
         setcookie('token', $string, time() + 3600 * 24 * 365 * 10, '/', $_SERVER['HTTP_HOST']);
@@ -202,7 +202,7 @@ class UserService
         throw new Exception('Не удалось сгенерировать токен.');
     }
 
-    protected function getUserByToken($token)
+    public function getUserByToken($token)
     {
         $userRepo = $this->em->getRepository('\Filehosting\Model\User');
         $user = $userRepo->findOneBy(array('cookieToken' => $token));

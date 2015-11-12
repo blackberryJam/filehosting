@@ -54,7 +54,11 @@ dropbox.addEventListener("drop", function(event) {
 
 sendButton.addEventListener("click", function(event) {
     files.forEach(function(item, i, arr) {
-        sendFile(item, counter);
+        (function(item, counter){
+            window.setTimeout(function() {
+                sendFile(item, counter);
+            }, counter * 1000);
+        })(item, counter);
         counter++;
     });
     files = [];

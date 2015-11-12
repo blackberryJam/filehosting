@@ -18,10 +18,16 @@ $app->mount('/comment', new Filehosting\Controller\CommentControllerProvider());
 
 $app->before(function(Request $request, Silex\Application $app) {
     $lm = $app['user.service.login_manager'];
+
     if ($lm->isLoggedIn()) {
         $id = $lm->extractUserIdFromCookies();
         $lm->logIn($id);
         $app['user.logged_in'] = true;
+        return;
+    }
+
+    if (!isset($_COOKIE['token'])) {
+        $app['user.service']->setCookieToken();
     }
 });
 
